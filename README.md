@@ -1,8 +1,8 @@
-# Paystation API Postman collection
+## Paystation API Postman collection
 
 This is a postman collection of our [Paystation API](https://docs.paystation.co.nz/api/index.html)
 
-## Requirements
+### Requirements
 
 You'll need to supply your own Paystation gateway and oauth credentials, if you don't have these please [contact us](https://www2.paystation.co.nz/contact-us)
 
