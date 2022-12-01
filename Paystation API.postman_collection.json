@@ -1,0 +1,1578 @@
+{
+	"info": {
+		"_postman_id": "d736a844-be95-4dde-a766-25093f8c159e",
+		"name": "Paystation API",
+		"description": "### How to import\n\n- Open Postman\n- Go to _File_ → _Import_ → _Folder_\n- Choose project folder (where you've saved the files `Paystation API.postman_collection.json` and `Paystation Settings.postman_environment.json`)\n- Confirm what you want to import (environment and/or collection).    \n\n### Credentials:\n\nAdd your Paystation ID, Gateway ID and OAuth Credentials in the `Paystation Settings` environment\n\n### OAuth Authentication:\n\nAll of the requests inherit a _Pre-request_ script from the parent folder, and this script will add the _Authorization_ header automatically for you.\n\n`2Party`, `3Party` and `Token Management` folder, inherits the Authorization from `Paystation API`. Click on the folder and check the script under _Pre-request_ and the setting under _Authorization_.\n\n`Search & Reporting` folder has it's own _Pre-request_ script because it will only need an OAuth read scope.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "65700"
+	},
+	"item": [
+		{
+			"name": "2Party",
+			"item": [
+				{
+					"name": "Purchases",
+					"item": [
+						{
+							"name": "Purchase with credit card",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", () => {\r",
+											"   pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Transaction is successful\", () => {\r",
+											"  const responseJson = pm.response.json();   \r",
+											"  pm.expect(responseJson.transaction_id).is.not.null;\r",
+											"  pm.expect(responseJson.transaction_type).is.equal(\"purchase\");\r",
+											"  pm.expect(responseJson.integration_type).to.equal(\"2party\");  \r",
+											"  pm.expect(responseJson.paystation_id).is.equal(pm.environment.get(\"PAYSTATION_ID\"));\r",
+											"  pm.expect(responseJson.gateway_id).is.equal(pm.environment.get(\"GATEWAY_ID\"));  \r",
+											"  pm.expect(responseJson.result.title).is.equal(\"Transaction successful\");\r",
+											"  pm.expect(responseJson.result.success).is.equal(true);  \r",
+											"  pm.expect(responseJson.result.code).is.equal(\"0\"); \r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"paystation_id\": \"{{PAYSTATION_ID}}\",\r\n    \"gateway_id\": \"{{GATEWAY_ID}}\",\r\n    \"merchant_session\": \"{{$guid}}\",\r\n    \"amount\": 1000,\r\n    \"credit_card\": {\r\n        \"card_number\": \"5123456789012346\",\r\n        \"expiry_date\": \"2405\",\r\n        \"security_code\": \"123\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/transactions/purchases",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"transactions",
+										"purchases"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Purchase with credit card and tokenise",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", () => {\r",
+											"   pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Transaction is successful\", () => {\r",
+											"  const responseJson = pm.response.json();   \r",
+											"  pm.expect(responseJson.transaction_id).is.not.null;\r",
+											"  pm.expect(responseJson.token).is.not.null;\r",
+											"  pm.expect(responseJson.transaction_type).is.equal(\"purchase\");\r",
+											"  pm.expect(responseJson.integration_type).to.equal(\"2party\");  \r",
+											"  pm.expect(responseJson.paystation_id).is.equal(pm.environment.get(\"PAYSTATION_ID\"));\r",
+											"  pm.expect(responseJson.gateway_id).is.equal(pm.environment.get(\"GATEWAY_ID\"));  \r",
+											"  pm.expect(responseJson.result.title).is.equal(\"Transaction successful\");\r",
+											"  pm.expect(responseJson.result.success).is.equal(true);  \r",
+											"  pm.expect(responseJson.result.code).is.equal(\"0\"); \r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"paystation_id\": \"{{PAYSTATION_ID}}\",\r\n    \"gateway_id\": \"{{GATEWAY_ID}}\",\r\n    \"merchant_session\": \"{{$guid}}\",\r\n    \"amount\": 1000,\r\n    \"credit_card\": {\r\n        \"card_number\": \"5123456789012346\",\r\n        \"expiry_date\": \"2405\",\r\n        \"security_code\": \"123\"\r\n    },\r\n    \"tokenise\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/transactions/purchases",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"transactions",
+										"purchases"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Purchase with credit card and tokenise with custom token name",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", () => {\r",
+											"   pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Transaction is successful\", () => {\r",
+											"  const responseJson = pm.response.json();   \r",
+											"  pm.expect(responseJson.transaction_id).is.not.null;\r",
+											"  pm.expect(responseJson.token).is.not.null;\r",
+											"  pm.expect(responseJson.transaction_type).is.equal(\"purchase\");\r",
+											"  pm.expect(responseJson.integration_type).to.equal(\"2party\");  \r",
+											"  pm.expect(responseJson.paystation_id).is.equal(pm.environment.get(\"PAYSTATION_ID\"));\r",
+											"  pm.expect(responseJson.gateway_id).is.equal(pm.environment.get(\"GATEWAY_ID\"));  \r",
+											"  pm.expect(responseJson.result.title).is.equal(\"Transaction successful\");\r",
+											"  pm.expect(responseJson.result.success).is.equal(true);  \r",
+											"  pm.expect(responseJson.result.code).is.equal(\"0\"); \r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"paystation_id\": \"{{PAYSTATION_ID}}\",\r\n    \"gateway_id\": \"{{GATEWAY_ID}}\",\r\n    \"merchant_session\": \"{{$guid}}\",\r\n    \"amount\": 1000,\r\n    \"credit_card\": {\r\n        \"card_number\": \"5123456789012346\",\r\n        \"expiry_date\": \"2405\",\r\n        \"security_code\": \"123\"\r\n    },\r\n    \"tokenise\": true,\r\n    \"token\": \"my-custom-token-{{$randomUUID}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/transactions/purchases",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"transactions",
+										"purchases"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Purchase using token",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", () => {\r",
+											"   pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Transaction is successful\", () => {\r",
+											"  const responseJson = pm.response.json();     \r",
+											"  pm.expect(responseJson.transaction_id).is.not.null;\r",
+											"  pm.expect(responseJson.token).is.not.null;\r",
+											"  pm.expect(responseJson.transaction_type).is.equal(\"purchase\");\r",
+											"  pm.expect(responseJson.integration_type).to.equal(\"2party\");\r",
+											"  pm.expect(responseJson.paystation_id).is.equal(pm.environment.get(\"PAYSTATION_ID\"));\r",
+											"  pm.expect(responseJson.gateway_id).is.equal(pm.environment.get(\"GATEWAY_ID\"));  \r",
+											"  pm.expect(responseJson.result.title).is.equal(\"Transaction successful\");\r",
+											"  pm.expect(responseJson.result.success).is.equal(true);  \r",
+											"  pm.expect(responseJson.result.code).is.equal(\"0\"); \r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"paystation_id\": \"{{PAYSTATION_ID}}\",\r\n    \"gateway_id\": \"{{GATEWAY_ID}}\",\r\n    \"merchant_session\": \"{{$guid}}\",\r\n    \"amount\": 1000,\r\n    \"token\": \"my-custom-token\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/transactions/purchases",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"transactions",
+										"purchases"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Authorisations & Captures",
+					"item": [
+						{
+							"name": "Authorisation with credit card",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", () => {\r",
+											"   pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Transaction is successful\", () => {\r",
+											"  const responseJson = pm.response.json();   \r",
+											"  pm.expect(responseJson.transaction_id).is.not.null;\r",
+											"  pm.expect(responseJson.payment_url).is.not.null;\r",
+											"  pm.expect(responseJson.transaction_type).is.equal(\"authorisation\");\r",
+											"  pm.expect(responseJson.integration_type).is.equal(\"2party\");\r",
+											"  pm.expect(responseJson.paystation_id).is.equal(pm.environment.get(\"PAYSTATION_ID\"));\r",
+											"  pm.expect(responseJson.gateway_id).is.equal(pm.environment.get(\"GATEWAY_ID\"));    \r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"paystation_id\": \"{{PAYSTATION_ID}}\",\r\n    \"gateway_id\": \"{{GATEWAY_ID}}\",\r\n    \"merchant_session\": \"{{$guid}}\",\r\n    \"amount\": 2000,\r\n    \"credit_card\": {\r\n        \"card_number\": \"5123456789012346\",\r\n        \"expiry_date\": \"2405\",\r\n        \"security_code\": \"123\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/transactions/authorisations",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"transactions",
+										"authorisations"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Authorisation with token",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", () => {\r",
+											"   pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Transaction is successful\", () => {\r",
+											"  const responseJson = pm.response.json();   \r",
+											"  pm.expect(responseJson.transaction_id).is.not.null;\r",
+											"  pm.expect(responseJson.payment_url).is.not.null;\r",
+											"  pm.expect(responseJson.transaction_type).is.equal(\"authorisation\");\r",
+											"  pm.expect(responseJson.integreation_type).is.equal(\"2party\");\r",
+											"  pm.expect(responseJson.paystation_id).is.equal(pm.environment.get(\"PAYSTATION_ID\"));\r",
+											"  pm.expect(responseJson.gateway_id).is.equal(pm.environment.get(\"GATEWAY_ID\"));    \r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"paystation_id\": \"{{PAYSTATION_ID}}\",\r\n    \"gateway_id\": \"{{GATEWAY_ID}}\",\r\n    \"merchant_session\": \"{{$guid}}\",\r\n    \"amount\": 2000,\r\n    \"token\": \"token-name-here\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/transactions/authorisations",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"transactions",
+										"authorisations"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Capture",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", () => {\r",
+											"   pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Transaction is successful\", () => {\r",
+											"  const responseJson = pm.response.json();   \r",
+											"  pm.expect(responseJson.transaction_id).is.not.null;\r",
+											"  pm.expect(responseJson.payment_url).is.not.null;\r",
+											"  pm.expect(responseJson.transaction_type).is.equal(\"capture\");\r",
+											"  pm.expect(responseJson.integration_type).is.equal(\"2party\");\r",
+											"  pm.expect(responseJson.paystation_id).is.equal(pm.environment.get(\"PAYSTATION_ID\"));\r",
+											"  pm.expect(responseJson.gateway_id).is.equal(pm.environment.get(\"GATEWAY_ID\"));    \r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"paystation_id\": \"{{PAYSTATION_ID}}\",\r\n    \"gateway_id\": \"{{GATEWAY_ID}}\",\r\n    \"merchant_session\": \"{{$guid}}\",\r\n    \"amount\": 1000\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/transactions/12345/captures",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"transactions",
+										"12345",
+										"captures"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Refunds",
+					"item": [
+						{
+							"name": "Refund a transaction",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", () => {\r",
+											"   pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Transaction is successful\", () => {\r",
+											"  const responseJson = pm.response.json();   \r",
+											"  pm.expect(responseJson.transaction_id).is.not.null;\r",
+											"  pm.expect(responseJson.transaction_type).is.equal(\"refund\");\r",
+											"  pm.expect(responseJson.original_transaction.transaction_id).is.not.null;\r",
+											"  pm.expect(responseJson.paystation_id).is.equal(pm.environment.get(\"PAYSTATION_ID\"));\r",
+											"  pm.expect(responseJson.gateway_id).is.equal(pm.environment.get(\"GATEWAY_ID\"));  \r",
+											"  pm.expect(responseJson.result.title).is.equal(\"Transaction successful\");\r",
+											"  pm.expect(responseJson.result.success).is.equal(true);  \r",
+											"  pm.expect(responseJson.result.code).is.equal(\"0\");  \r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"paystation_id\": \"{{PAYSTATION_ID}}\",\r\n    \"gateway_id\": \"{{GATEWAY_ID}}\",\r\n    \"merchant_session\": \"{{$guid}}\",\r\n    \"amount\": 1000\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/transactions/12345/refunds",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"transactions",
+										"12345",
+										"refunds"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "3Party",
+			"item": [
+				{
+					"name": "Purchases",
+					"item": [
+						{
+							"name": "Initiate a purchase",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", () => {\r",
+											"   pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Transaction is successful\", () => {\r",
+											"  const responseJson = pm.response.json();   \r",
+											"  pm.expect(responseJson.transaction_id).is.not.null;\r",
+											"  pm.expect(responseJson.payment_url).is.not.null;\r",
+											"  pm.expect(responseJson.transaction_type).is.equal(\"purchase\");\r",
+											"  pm.expect(responseJson.integration_type).is.equal(\"3party\");\r",
+											"  pm.expect(responseJson.paystation_id).is.equal(pm.environment.get(\"PAYSTATION_ID\"));\r",
+											"  pm.expect(responseJson.gateway_id).is.equal(pm.environment.get(\"GATEWAY_ID\"));    \r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"paystation_id\": \"{{PAYSTATION_ID}}\",\r\n    \"gateway_id\": \"{{GATEWAY_ID}}\",\r\n    \"merchant_session\": \"{{$guid}}\",\r\n    \"merchant_reference\": \"your reference\",\r\n    \"amount\": 1000\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/hosted/purchases",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"hosted",
+										"purchases"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Initiate a purchase and tokenise",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", () => {\r",
+											"   pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Transaction is successful\", () => {\r",
+											"  const responseJson = pm.response.json();   \r",
+											"  pm.expect(responseJson.transaction_id).is.not.null;\r",
+											"  pm.expect(responseJson.payment_url).is.not.null;\r",
+											"  pm.expect(responseJson.transaction_type).is.equal(\"purchase\");\r",
+											"  pm.expect(responseJson.integration_type).is.equal(\"3party\");  \r",
+											"  pm.expect(responseJson.paystation_id).is.equal(pm.environment.get(\"PAYSTATION_ID\"));\r",
+											"  pm.expect(responseJson.gateway_id).is.equal(pm.environment.get(\"GATEWAY_ID\"));    \r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"paystation_id\": \"{{PAYSTATION_ID}}\",\r\n    \"gateway_id\": \"{{GATEWAY_ID}}\",\r\n    \"merchant_session\": \"{{$guid}}\",\r\n    \"merchant_reference\": \"your reference\",\r\n    \"amount\": 1000,\r\n    \"tokenise\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/hosted/purchases",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"hosted",
+										"purchases"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Initiate a purchase and tokenise with custom token name",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", () => {\r",
+											"   pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Transaction is successful\", () => {\r",
+											"  const responseJson = pm.response.json();   \r",
+											"  pm.expect(responseJson.transaction_id).is.not.null;\r",
+											"  pm.expect(responseJson.payment_url).is.not.null;\r",
+											"  pm.expect(responseJson.transaction_type).is.equal(\"purchase\");\r",
+											"  pm.expect(responseJson.integration_type).is.equal(\"3party\");  \r",
+											"  pm.expect(responseJson.paystation_id).is.equal(pm.environment.get(\"PAYSTATION_ID\"));\r",
+											"  pm.expect(responseJson.gateway_id).is.equal(pm.environment.get(\"GATEWAY_ID\"));    \r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"paystation_id\": \"{{PAYSTATION_ID}}\",\r\n    \"gateway_id\": \"{{GATEWAY_ID}}\",\r\n    \"merchant_session\": \"{{$guid}}\",\r\n    \"merchant_reference\": \"your reference\",    \r\n    \"amount\": 1000,\r\n    \"tokenise\": true,\r\n    \"token\": \"my-custom-token-{{$randomUUID}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/hosted/purchases",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"hosted",
+										"purchases"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Authorisations & Captures",
+					"item": [
+						{
+							"name": "Initiate an authorisation",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", () => {\r",
+											"   pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Transaction is successful\", () => {\r",
+											"  const responseJson = pm.response.json();   \r",
+											"  pm.expect(responseJson.transaction_id).to.be.not.null;\r",
+											"  pm.expect(responseJson.payment_url).to.be.not.null;\r",
+											"  pm.expect(responseJson.transaction_type).to.equal(\"authorisation\");\r",
+											"  pm.expect(responseJson.integreation_type).to.equal(\"3party\");\r",
+											"  pm.expect(responseJson.paystation_id).to.equal(pm.environment.get(\"PAYSTATION_ID\"));\r",
+											"  pm.expect(responseJson.gateway_id).to.equal(pm.environment.get(\"GATEWAY_ID\"));    \r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"paystation_id\": \"{{PAYSTATION_ID}}\",\r\n    \"gateway_id\": \"{{GATEWAY_ID}}\",\r\n    \"merchant_session\": \"{{$guid}}\",\r\n    \"amount\": 2000\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/hosted/authorisations",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"hosted",
+										"authorisations"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Capture",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", () => {\r",
+											"   pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Transaction is successful\", () => {\r",
+											"  const responseJson = pm.response.json();   \r",
+											"  pm.expect(responseJson.transaction_id).to.be.not.null;\r",
+											"  pm.expect(responseJson.payment_url).to.be.not.null;\r",
+											"  pm.expect(responseJson.transaction_type).to.equal(\"purchase\");\r",
+											"  pm.expect(responseJson.paystation_id).to.equal(pm.environment.get(\"PAYSTATION_ID\"));\r",
+											"  pm.expect(responseJson.gateway_id).to.equal(pm.environment.get(\"GATEWAY_ID\"));    \r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"paystation_id\": \"{{PAYSTATION_ID}}\",\r\n    \"gateway_id\": \"{{GATEWAY_ID}}\",\r\n    \"merchant_session\": \"{{$guid}}\",\r\n    \"amount\": 1000\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/transactions/12345/captures",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"transactions",
+										"12345",
+										"captures"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "PayMe",
+					"item": [
+						{
+							"name": "Create a PayMe payment URL",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", () => {\r",
+											"   pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Transaction is successful\", () => {\r",
+											"  const responseJson = pm.response.json();   \r",
+											"  pm.expect(responseJson.transaction_id).is.not.null;\r",
+											"  pm.expect(responseJson.payme_url).is.not.null;  \r",
+											"  pm.expect(responseJson.single_use).is.equal(false);\r",
+											"  pm.expect(responseJson.charge).is.equal(true);\r",
+											"  pm.expect(responseJson.paystation_id).is.equal(pm.environment.get(\"PAYSTATION_ID\"));\r",
+											"  pm.expect(responseJson.gateway_id).is.equal(pm.environment.get(\"GATEWAY_ID\"));    \r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"paystation_id\": \"{{PAYSTATION_ID}}\",\r\n    \"gateway_id\": \"{{GATEWAY_ID}}\",\r\n    \"order_name\": \"my-payme-order-{{$guid}}\",\r\n    \"merchant_reference\": \"your reference\",\r\n    \"amount\": 1000\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/payme/purchases",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"payme",
+										"purchases"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create a PayMe payment and tokenise URL",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", () => {\r",
+											"   pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Transaction is successful\", () => {\r",
+											"  const responseJson = pm.response.json();   \r",
+											"  pm.expect(responseJson.transaction_id).is.not.null;\r",
+											"  pm.expect(responseJson.payme_url).is.not.null;  \r",
+											"  pm.expect(responseJson.single_use).is.equal(false);\r",
+											"  pm.expect(responseJson.charge).is.equal(true);\r",
+											"  pm.expect(responseJson.paystation_id).is.equal(pm.environment.get(\"PAYSTATION_ID\"));\r",
+											"  pm.expect(responseJson.gateway_id).is.equal(pm.environment.get(\"GATEWAY_ID\"));    \r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"paystation_id\": \"{{PAYSTATION_ID}}\",\r\n    \"gateway_id\": \"{{GATEWAY_ID}}\",\r\n    \"order_name\": \"my-payme-order-{{$guid}}\",\r\n    \"merchant_reference\": \"your reference\",    \r\n    \"amount\": 1000,\r\n    \"future_pay\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/payme/purchases",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"payme",
+										"purchases"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create a PayMe payment URL with custom fields",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", () => {\r",
+											"   pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Transaction is successful\", () => {\r",
+											"  const responseJson = pm.response.json();   \r",
+											"  pm.expect(responseJson.transaction_id).is.not.null;\r",
+											"  pm.expect(responseJson.payme_url).is.not.null;  \r",
+											"  pm.expect(responseJson.single_use).is.equal(false);\r",
+											"  pm.expect(responseJson.charge).is.equal(true);\r",
+											"  pm.expect(responseJson.paystation_id).is.equal(pm.environment.get(\"PAYSTATION_ID\"));\r",
+											"  pm.expect(responseJson.gateway_id).is.equal(pm.environment.get(\"GATEWAY_ID\"));    \r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"paystation_id\": \"{{PAYSTATION_ID}}\",\r\n    \"gateway_id\": \"{{GATEWAY_ID}}\",\r\n    \"order_name\": \"my-payme-order-{{$guid}}\",\r\n    \"merchant_reference\": \"my custom reference\",\r\n    \"amount\": 1000,\r\n    \"single_use\": false,\r\n    \"custom_fields\": [\r\n        {\r\n            \"name\": \"Example reference\",\r\n            \"type\": \"REFERENCE\",\r\n            \"value\": \"value to display\"\r\n        },\r\n        {\r\n            \"name\": \"Example dropdown\",\r\n            \"type\": \"SELECT\",\r\n            \"options\": [\r\n                {\r\n                    \"name\": \"OPTION 1\",\r\n                    \"value\": \"value1\"\r\n                },\r\n                {\r\n                    \"name\": \"OPTION 2\",\r\n                    \"value\": \"value2\"\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"name\": \"Example input\",\r\n            \"type\": \"TEXT\",\r\n            \"min\": 1,\r\n            \"max\": 100\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/payme/purchases",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"payme",
+										"purchases"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create a PayMe token save URL",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", () => {\r",
+											"   pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Transaction is successful\", () => {\r",
+											"  const responseJson = pm.response.json();   \r",
+											"  pm.expect(responseJson.transaction_id).is.not.null;\r",
+											"  pm.expect(responseJson.payme_url).is.not.null;  \r",
+											"  pm.expect(responseJson.paystation_id).is.equal(pm.environment.get(\"PAYSTATION_ID\"));\r",
+											"  pm.expect(responseJson.gateway_id).is.equal(pm.environment.get(\"GATEWAY_ID\"));    \r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"paystation_id\": \"{{PAYSTATION_ID}}\",\r\n    \"gateway_id\": \"{{GATEWAY_ID}}\",\r\n    \"order_name\": \"payme-order-name{{$guid}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/payme/tokens",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"payme",
+										"tokens"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Refunds",
+					"item": [
+						{
+							"name": "Refund a transaction",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", () => {\r",
+											"   pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Transaction is successful\", () => {\r",
+											"  const responseJson = pm.response.json();   \r",
+											"  pm.expect(responseJson.transaction_id).to.be.not.null;\r",
+											"  pm.expect(responseJson.token).to.be.not.null;\r",
+											"  pm.expect(responseJson.transaction_type).to.equal(\"refund\");\r",
+											"  pm.expect(responseJson.original_transaction.transaction_id).to.be.not.null;\r",
+											"  pm.expect(responseJson.paystation_id).to.equal(pm.environment.get(\"PAYSTATION_ID\"));\r",
+											"  pm.expect(responseJson.gateway_id).to.equal(pm.environment.get(\"GATEWAY_ID\"));  \r",
+											"  pm.expect(responseJson.result.title).to.equal(\"Transaction successful\");\r",
+											"  pm.expect(responseJson.result.success).to.equal(true);  \r",
+											"  pm.expect(responseJson.result.code).to.equal(\"0\");  \r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"paystation_id\": \"{{PAYSTATION_ID}}\",\r\n    \"gateway_id\": \"{{GATEWAY_ID}}\",\r\n    \"merchant_session\": \"{{$guid}}\",\r\n    \"amount\": 1000\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/transactions/123456/refunds",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"transactions",
+										"123456",
+										"refunds"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Token Management",
+			"item": [
+				{
+					"name": "Save a token for future purchases (2party)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {\r",
+									"   pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Transaction is successful\", () => {\r",
+									"  const responseJson = pm.response.json();   \r",
+									"  pm.expect(responseJson.transaction_id).to.be.not.null;\r",
+									"  pm.expect(responseJson.token).to.be.not.null;\r",
+									"  pm.expect(responseJson.transaction_type).to.equal(\"token\");\r",
+									"  pm.expect(responseJson.integration_type).to.equal(\"2party\");\r",
+									"  pm.expect(responseJson.paystation_id).to.equal(pm.environment.get(\"PAYSTATION_ID\"));\r",
+									"  pm.expect(responseJson.gateway_id).to.equal(pm.environment.get(\"GATEWAY_ID\"));  \r",
+									"  pm.expect(responseJson.result.title).to.equal(\"Future Payment Saved Ok\");\r",
+									"  pm.expect(responseJson.result.success).to.equal(true);  \r",
+									"  pm.expect(responseJson.result.code).to.equal(\"34\");  \r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"paystation_id\": \"{{PAYSTATION_ID}}\",\r\n  \"gateway_id\": \"{{GATEWAY_ID}}\",\r\n  \"merchant_session\": \"{{$guid}}\",\r\n  \"credit_card\": {\r\n    \"card_number\": \"5123456789012346\",\r\n    \"expiry_date\": \"2405\",\r\n    \"security_code\": \"123\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/tokens",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"tokens"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Initiate a token save for future purchases (3party)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {\r",
+									"   pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Transaction is successful\", () => {\r",
+									"  const responseJson = pm.response.json();   \r",
+									"  pm.expect(responseJson.transaction_id).to.be.not.null;\r",
+									"  pm.expect(responseJson.token).to.be.not.null;\r",
+									"  pm.expect(responseJson.transaction_type).to.equal(\"token\");\r",
+									"  pm.expect(responseJson.integration_type).to.equal(\"2party\");\r",
+									"  pm.expect(responseJson.paystation_id).to.equal(pm.environment.get(\"PAYSTATION_ID\"));\r",
+									"  pm.expect(responseJson.gateway_id).to.equal(pm.environment.get(\"GATEWAY_ID\"));  \r",
+									"  pm.expect(responseJson.result.title).to.equal(\"Future Payment Saved Ok\");\r",
+									"  pm.expect(responseJson.result.success).to.equal(true);  \r",
+									"  pm.expect(responseJson.result.code).to.equal(\"34\");  \r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"paystation_id\": \"{{PAYSTATION_ID}}\",\r\n  \"gateway_id\": \"{{GATEWAY_ID}}\",\r\n  \"merchant_session\": \"{{$guid}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/hosted/tokens",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"hosted",
+								"tokens"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a token name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {\r",
+									"   pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Transaction is successful\", () => {\r",
+									"  const responseJson = pm.response.json();   \r",
+									"  pm.expect(responseJson.transaction_id).to.be.not.null;\r",
+									"  pm.expect(responseJson.token).to.be.not.null;\r",
+									"  pm.expect(responseJson.transaction_type).to.equal(\"token\");\r",
+									"  pm.expect(responseJson.integration_type).to.equal(\"2party\");\r",
+									"  pm.expect(responseJson.paystation_id).to.equal(pm.environment.get(\"PAYSTATION_ID\"));\r",
+									"  pm.expect(responseJson.gateway_id).to.equal(pm.environment.get(\"GATEWAY_ID\"));  \r",
+									"  pm.expect(responseJson.result.title).to.equal(\"Future Payment Saved Ok\");\r",
+									"  pm.expect(responseJson.result.success).to.equal(true);  \r",
+									"  pm.expect(responseJson.result.code).to.equal(\"34\");  \r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"paystation_id\": \"{{PAYSTATION_ID}}\",\r\n  \"gateway_id\": \"{{GATEWAY_ID}}\",\r\n  \"merchant_session\": \"{{$guid}}\",\r\n  \"token\": \"my-custom-token\",\r\n  \"new_token\": \"new-token-name\" \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/tokens",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"tokens"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a token expiry",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {\r",
+									"   pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Transaction is successful\", () => {\r",
+									"  const responseJson = pm.response.json();   \r",
+									"  pm.expect(responseJson.transaction_id).to.be.not.null;\r",
+									"  pm.expect(responseJson.token).to.be.not.null;\r",
+									"  pm.expect(responseJson.transaction_type).to.equal(\"token\");\r",
+									"  pm.expect(responseJson.integration_type).to.equal(\"2party\");\r",
+									"  pm.expect(responseJson.paystation_id).to.equal(pm.environment.get(\"PAYSTATION_ID\"));\r",
+									"  pm.expect(responseJson.gateway_id).to.equal(pm.environment.get(\"GATEWAY_ID\"));  \r",
+									"  pm.expect(responseJson.result.title).to.equal(\"Future Payment Saved Ok\");\r",
+									"  pm.expect(responseJson.result.success).to.equal(true);  \r",
+									"  pm.expect(responseJson.result.code).to.equal(\"34\");  \r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"paystation_id\": \"{{PAYSTATION_ID}}\",\r\n  \"gateway_id\": \"{{GATEWAY_ID}}\",\r\n  \"merchant_session\": \"{{$guid}}\",\r\n  \"token\": \"my-custom-token\",\r\n  \"credit_card\": {\r\n      \"expiry_date\": \"2405\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/tokens",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"tokens"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {\r",
+									"   pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Transaction is successful\", () => {\r",
+									"  const responseJson = pm.response.json();   \r",
+									"  pm.expect(responseJson.transaction_id).to.be.not.null;\r",
+									"  pm.expect(responseJson.token).to.be.not.null;\r",
+									"  pm.expect(responseJson.transaction_type).to.equal(\"token\");\r",
+									"  pm.expect(responseJson.integration_type).to.equal(\"2party\");\r",
+									"  pm.expect(responseJson.paystation_id).to.equal(pm.environment.get(\"PAYSTATION_ID\"));\r",
+									"  pm.expect(responseJson.gateway_id).to.equal(pm.environment.get(\"GATEWAY_ID\"));  \r",
+									"  pm.expect(responseJson.result.title).to.equal(\"Future Payment Saved Ok\");\r",
+									"  pm.expect(responseJson.result.success).to.equal(true);  \r",
+									"  pm.expect(responseJson.result.code).to.equal(\"34\");  \r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"paystation_id\": \"{{PAYSTATION_ID}}\",\r\n  \"gateway_id\": \"{{GATEWAY_ID}}\",\r\n  \"merchant_session\": \"{{$guid}}\",\r\n  \"token\": \"my-custom-token\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/tokens/delete",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"tokens",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Search & Reporting",
+			"item": [
+				{
+					"name": "Find by transaction id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {\r",
+									"   pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Transaction is successful\", () => {\r",
+									"  const responseJson = pm.response.json();   \r",
+									"  pm.expect(responseJson.transaction_id).to.be.not.null;\r",
+									"  pm.expect(responseJson.paystation_id).to.equal(pm.environment.get(\"PAYSTATION_ID\"));\r",
+									"  pm.expect(responseJson.gateway_id).to.equal(pm.environment.get(\"GATEWAY_ID\"));    \r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/transactions/12345",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"transactions",
+								"12345"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Transaction lookup",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {\r",
+									"   pm.response.to.have.status(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/transactions?paystation_id={{PAYSTATION_ID}}&gateway_id={{GATEWAY_ID}}&merchant_session=abc1234",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"transactions"
+							],
+							"query": [
+								{
+									"key": "paystation_id",
+									"value": "{{PAYSTATION_ID}}"
+								},
+								{
+									"key": "gateway_id",
+									"value": "{{GATEWAY_ID}}"
+								},
+								{
+									"key": "merchant_session",
+									"value": "abc1234",
+									"description": "lookup by merchant session"
+								},
+								{
+									"key": "transaction_id",
+									"value": "1",
+									"description": "lookup by transaction id",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search transactions",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {\r",
+									"   pm.response.to.have.status(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/transactions/reporting?paystation_id={{PAYSTATION_ID}}&gateway_id={{GATEWAY_ID}}",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"transactions",
+								"reporting"
+							],
+							"query": [
+								{
+									"key": "paystation_id",
+									"value": "{{PAYSTATION_ID}}"
+								},
+								{
+									"key": "gateway_id",
+									"value": "{{GATEWAY_ID}}"
+								},
+								{
+									"key": "merchant_session",
+									"value": "abc1234",
+									"description": "filter by merchant session (exact or partial)",
+									"disabled": true
+								},
+								{
+									"key": "merchant_reference",
+									"value": "abcd",
+									"disabled": true
+								},
+								{
+									"key": "amount",
+									"value": "2000",
+									"description": "filter by amount in cents",
+									"disabled": true
+								},
+								{
+									"key": "amount_filter",
+									"value": "exact",
+									"description": "\"greater\" \"less\" \"exact\"; defaults to exact",
+									"disabled": true
+								},
+								{
+									"key": "transaction_type",
+									"value": "purchase",
+									"description": "filter by transaction types: \"purchase\" \"refund\" \"token\" \"authorisation\" \"capture\"",
+									"disabled": true
+								},
+								{
+									"key": "test_mode",
+									"value": "true",
+									"description": "true or false",
+									"disabled": true
+								},
+								{
+									"key": "start_date_time",
+									"value": "2022-10-23 00:00:00",
+									"description": "defaults to midnight of today's date  YYYY-MM-DD HH:MM:SS",
+									"disabled": true
+								},
+								{
+									"key": "end_date_time",
+									"value": "2022-10-23 08:23:30",
+									"description": "defaults to request date and time YYYY-MM-DD HH:MM:SS",
+									"disabled": true
+								},
+								{
+									"key": "sort_by",
+									"value": "asc",
+									"description": "\"asc\" or \"desc\"; defaults to asc",
+									"disabled": true
+								},
+								{
+									"key": "page_size",
+									"value": "10",
+									"description": "number of items per page; defaults to 100",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"description": "move to page; defaults to 1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{access_token_read}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"const tokenUrl = pm.variables.get('OAUTH_URL');",
+							"",
+							"const clientId = pm.variables.get('OAUTH_CLIENT_ID');",
+							"const clientSecret = pm.variables.get('OAUTH_CLIENT_SECRET');",
+							"",
+							"const getTokenRequest = {",
+							"  method: 'POST',",
+							"  url: tokenUrl,",
+							"  body: {",
+							"      mode: 'formdata',",
+							"      formdata: [",
+							"          { key: 'grant_type', value: 'client_credentials' },",
+							"          { key: 'client_id', value: clientId },",
+							"          { key: 'client_secret', value: clientSecret },",
+							"          { key: 'scope', value: 'read' }",
+							"      ]",
+							"  }",
+							"};",
+							"",
+							"pm.sendRequest(getTokenRequest, (err, response) => {",
+							"  const jsonResponse = response.json();",
+							"  const newAccessToken = jsonResponse.access_token;",
+							"",
+							"  pm.variables.set('access_token_read', newAccessToken);",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"const tokenUrl = pm.variables.get('OAUTH_URL');",
+					"",
+					"const clientId = pm.variables.get('OAUTH_CLIENT_ID');",
+					"const clientSecret = pm.variables.get('OAUTH_CLIENT_SECRET');",
+					"",
+					"const getTokenRequest = {",
+					"  method: 'POST',",
+					"  url: tokenUrl,",
+					"  body: {",
+					"      mode: 'formdata',",
+					"      formdata: [",
+					"          { key: 'grant_type', value: 'client_credentials' },",
+					"          { key: 'client_id', value: clientId },",
+					"          { key: 'client_secret', value: clientSecret },",
+					"          { key: 'scope', value: 'write' }",
+					"      ]",
+					"  }",
+					"};",
+					"",
+					"pm.sendRequest(getTokenRequest, (err, response) => {",
+					"  const jsonResponse = response.json();",
+					"  const newAccessToken = jsonResponse.access_token;",
+					"",
+					"  pm.variables.set('access_token', newAccessToken);  ",
+					"});"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "OAUTH_URL",
+			"value": "https://api.paystation.co.nz/oauth/token",
+			"type": "string"
+		},
+		{
+			"key": "API_URL",
+			"value": "https://api.paystation.co.nz/v1",
+			"type": "string"
+		}
+	]
+}
